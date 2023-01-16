@@ -28,7 +28,7 @@ def format_duration(secs):
 
 class CaesarCipher:
     """Encodes to and from a caesar cipher"""
-    def __init__(self, shift):
+    def __init__(self, shift=23):
         self.shift = shift
 
     def encode(self, st):
@@ -42,3 +42,10 @@ class CaesarCipher:
         shift = self.shift
         return "".join([c if not c.isalpha() else chr(ord(c)-shift) if ord(c)-shift in range(65, 91)
                         else chr(ord(c)+26-shift) for c in st])
+
+
+if __name__ == "__main__":
+    print(format_duration(3754))
+    a = CaesarCipher()
+    print(a.encode("Hello world!"))
+    print(a.decode(a.encode("Hello world!")))
