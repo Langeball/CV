@@ -1,4 +1,4 @@
-def format_duration(secs):
+def format_duration(secs: int) -> str:
     """Formats seconds to minutes, days, hours, etc. Time complexity: O(1). Space complexity: O(1)"""
     if secs == 0:
         return "now"
@@ -28,17 +28,17 @@ def format_duration(secs):
 
 class CaesarCipher:
     """Encodes to and from a caesar cipher"""
-    def __init__(self, shift=23):
-        self.shift = shift
+    def __init__(self, shift: int = 23):
+        self.shift = min(max(shift, 1), 25)  # Prevents edge cases, ie: 0 and below or 26 and above
 
-    def encode(self, st):
+    def encode(self, st: str) -> str:
         """Time complexity: O(n). Space complexity: O(n)"""
-        st = st.upper()
+        st = st.upper()  # For simplicity. Upper and lowercase don't share same values in Unicode
         shift = self.shift
         return "".join([c if not c.isalpha() else chr(ord(c)+shift) if ord(c)+shift in range(65, 91)
                         else chr(ord(c)-26+shift) for c in st])
 
-    def decode(self, st):
+    def decode(self, st: str) -> str:
         """Time complexity: O(n). Space complexity: O(n)"""
         st = st.upper()
         shift = self.shift
@@ -46,7 +46,7 @@ class CaesarCipher:
                         else chr(ord(c)+26-shift) for c in st])
 
 
-def rgb(r, g, b):
+def rgb(r: int, g: int, b: int) -> str:
     """Converts RGB to hex values. Time complexity: O(1). Space complexity: O(1)"""
     take_closest = lambda num, collection: min(collection, key=lambda x: abs(x - num))
     rgb_range = [0, 255]
@@ -57,9 +57,26 @@ def rgb(r, g, b):
     return f"{r.zfill(2)}{g.zfill(2)}{b.zfill(2)}".upper()
 
 
+def quicksort(sequence: List[int]) -> List[int]:
+    """t: O(n log n) // s: O(log n) // Unstable version"""
+    len_seq = len(sequence)
+    if len_seq <= 1:
+        return sequence
+    pivot_index = randint(1, len_seq-1)  # Random pivot
+    pivot = [sequence[pivot_index]]
+    higher = []
+    lower = []
+    for n in sequence[:pivot_index]+sequence[pivot_index+1:]:
+        if n > pivot[0]:
+            higher.append(n)
+        else:
+            lower.append(n)
+    return quicksort(lower) + pivot + quicksort(higher)
+
+
 if __name__ == "__main__":
     a = CaesarCipher()
     to_print = [format_duration(3754), a.encode("Hello world!"), a.decode(a.encode("Hello world!")),
-                rgb(145, 233, 999), ]
+                rgb(145, 233, 999), quicksort([7, 6, 5, 4, 3, 2, 1]), ]
     for f in to_print:
         print(f)
