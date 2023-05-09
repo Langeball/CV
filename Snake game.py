@@ -32,7 +32,6 @@ def main():
         if collision():
             delete_tail(*tail)
         draw_cube(*head)
-        print(head)
 
         # Update screen and frame-rate
         pygame.display.update()
