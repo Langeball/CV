@@ -32,6 +32,7 @@ def main():
         if collision():
             delete_tail(*tail)
         draw_cube(*head)
+        print(head)
 
         # Update screen and frame-rate
         pygame.display.update()
@@ -62,7 +63,8 @@ def collision():
         return False
 
     # Border control
-    if board+cube_size in head or -cube_size in head:
+    x, y = head
+    if (x < 0 or x >= board_size) or (y < 0 or y >= board_size):
         pygame.quit()
         raise StopIteration
 
@@ -76,7 +78,7 @@ def collision():
 def place_food():
     """Randrange will eventually slow down game horrifically. TODO: asyncio it"""
     while True:
-        x, y = random.randrange(0, board, cube_size), random.randrange(0, board, cube_size)
+        x, y = random.randrange(0, board_size, cube_size), random.randrange(0, board_size, cube_size)
         # Prevent food from being placed inside snake
         if (x, y) not in snake:
             break
@@ -101,18 +103,18 @@ def control():
 
 # Setting up pygame board/screen
 pygame.init()
-board = 500  # x and y value
-screen = pygame.display.set_mode((board, board))
+board_size = 400  # x and y value
+screen = pygame.display.set_mode((board_size, board_size))
 background_colour = "black"
 clock = pygame.time.Clock()  # Control frame-rate
 frame_rate = 10
 
 # Snake logic
-cube_size = 25  # x itself
+cube_size = 25  # x and y value
 cube_colour = "red"
-head = (board//2, board//2)  # Middle of board
-tail = ((board//2)-(cube_size*2), board//2)  # 2 cubes behind head
-body = deque([ ((board // 2) - cube_size, board // 2) ])  # 1 cube behind head
+head = (board_size // 2, board_size // 2)  # Middle of board
+tail = ((board_size // 2) - (cube_size * 2), board_size // 2)  # 2 cubes behind head
+body = deque([((board_size // 2) - cube_size, board_size // 2)])  # 1 cube behind head
 snake = {}
 direction = "right"
 # Draw the starting 3 length snake
@@ -125,3 +127,4 @@ food_location = place_food()
 
 if __name__ == "__main__":
     main()
+
