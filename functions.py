@@ -25,12 +25,12 @@ class RelativeCamera:
     def offset_center(self, position):
         """Offsets coordinates of everything in a matrix relative to a given position"""
         h, w = position
-        start_h = (self.board_width / 2) - (self.sprite_size * h)
+        start_h = (self.board_height / 2) - (self.sprite_size * h)
         start_w = (self.board_width / 2) - (self.sprite_size * w)
         reset_w = start_w
         for i_row, row in enumerate(self.matrix_one):
             for i_num, num in enumerate(row):
-                self.matrix_one[i_row][i_num] = f"({start_h}, {start_w})"
+                self.matrix_one[i_row][i_num] = (start_w, start_h)
                 start_w += self.sprite_size
             start_h += self.sprite_size
             start_w = reset_w
