@@ -8,6 +8,9 @@ Allows the 'camera' in a game to follow and stay centered on the player characte
 
 How to use:
 "Player character" is represented by a small green line. Control using arrow keys.
+Control level of zoom with numerical keys 1 and 2.
+
+Red lines are drawn from each node in matrix to center/character, to better illustrate what is happening.
 
 Here is a list of settings that can be changed and what they do:
   matrix_w: Width of the matrix. Controls the size of the "game world".
@@ -20,8 +23,8 @@ Here is a list of settings that can be changed and what they do:
 
 # Create matrix
 matrix_one = []
-matrix_w = 25
-matrix_h = 25
+matrix_w = 20
+matrix_h = 20
 for _ in range(matrix_h):
     matrix_one.append([None] * matrix_w)
 
@@ -29,7 +32,7 @@ for _ in range(matrix_h):
 board_width = 1280
 board_height = 720
 sprite_size = 25
-matrix_center_pos = matrix_h // 2, matrix_w //2
+matrix_center_pos = matrix_h / 2, matrix_w / 2
 char_pos = matrix_center_pos
 
 # Pygame setup
@@ -50,7 +53,7 @@ def offset_center(position):
             start_w += sprite_size
         start_h += sprite_size
         start_w = reset_w
-    # matrix_one[h][w] = "Character"
+    #matrix_one[h][w] = "Character"
 
 # Build matrix
 offset_center(char_pos)
@@ -58,8 +61,10 @@ offset_center(char_pos)
 
 # Game loop
 while True:
+    # Erase screen each loop
     screen.fill((0, 0, 0))
-
+    
+    # Listen for input (keyboard, mouse etc)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -78,23 +83,41 @@ while True:
             elif event.key == pygame.K_UP:
                 char_pos = char_pos[0] - 1, char_pos[1]
                 offset_center(char_pos)
+            # Zoom
+            elif event.key == pygame.K_1:
+                if sprite_size > 10:
+                    sprite_size -= 10
+                    offset_center(char_pos)
+            elif event.key == pygame.K_2:
+                if sprite_size < 50:
+                    sprite_size += 10
+                    offset_center(char_pos)
             #print(matrix_one)
 
     # Draw matrix grid
+    line_colour = (255, 0, 0)  # Max 255, min 0
     for rows in matrix_one:
         for col in rows:
             xy = (0, 0) if not col else col
             pygame.draw.line(surface=screen,
-                             color="red",
+                             color=line_colour,
                              start_pos=xy,
-                             end_pos=(board_width/2,board_height/2),
+                             end_pos=(board_width / 2, board_height / 2),
                              width=2)
-    # Draw center of screen
+
+    # Draw crosshair at center of screen
+    line_colour = (0, 255, 0)
     pygame.draw.line(surface=screen,
-                     color="green",
-                     start_pos=(board_width/2,board_height/2),
-                     end_pos=(board_width/2,board_height/2),
-                     width=5)
+                     color=line_colour,
+                     start_pos=((board_width / 2) - 6, board_height / 2),
+                     end_pos=((board_width / 2) + 7, board_height / 2),
+                     width=2)
+    pygame.draw.line(surface=screen,
+                     color=line_colour,
+                     start_pos=((board_width / 2), (board_height / 2) - 6),
+                     end_pos=((board_width / 2), (board_height / 2) + 7),
+                     width=2)
+    
 
     # Pygame updates
     pygame.display.update()
